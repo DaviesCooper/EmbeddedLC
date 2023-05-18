@@ -4,9 +4,9 @@
 #include <Arduino.h>
 #include "configuration.h"
 
-int pollSwitchMatrix()
+unsigned short pollInputs()
 {
-	int keys = 0;
+	unsigned short keys = 0;
 	// for each column
 	for (int colIndex = 0; colIndex < colCount; colIndex++)
 	{

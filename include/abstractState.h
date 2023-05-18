@@ -2,12 +2,36 @@
 #define ABSTRACTSTATE_H
 
 #include <Arduino.h>
+#include "stack.h"
 #include "configuration.h"
 
 struct AbstractState
 {
+static void  leftISR(){
+	static unsigned long lastLInterrupt = 0;
+	unsigned long LTimer = millis();
+	if(LTimer - lastLInterrupt > REncoderDebounceTime){
+		readREncoder(0);
+		lastLInterrupt = LTimer;
+	}
+}
+
+static void rightISR(){
+	static unsigned long lastRInterrupt = 0;
+	unsigned long RTimer = millis();
+	if(RTimer - lastRInterrupt > REncoderDebounceTime){
+		readREncoder(1);
+		lastRInterrupt = RTimer;
+	}
+}
+
+static void (*readREncoder)(uint8_t index);
+
 public:
-	AbstractState(){};
+	AbstractState(Stack<AbstractState *> state, void (*userFunc)(uint8_t)){
+		readREncoder = userFunc;
+	};
+
 	~AbstractState(){};
 	/**
 	 * @brief When entering this state do some preliminary actions.
@@ -35,8 +59,9 @@ public:
 	void Cycle()
 	{
 		unsigned long currentClock = millis();
-		while ((currentClock - lastFrame) < 1000.0 / FPS)
+		while ((currentClock - lastFrame) < 1000.0 / FPS){
 			currentClock = millis();
+		}
 		Update();
 		lastFrame = currentClock;
 	}
@@ -47,6 +72,9 @@ private:
 	 *
 	 */
 	unsigned long lastFrame = 0;
+
+protected:
+	Stack<AbstractState *> stack;
 };
 
 #endif

@@ -2,34 +2,26 @@
 #include "configuration.h"
 #include "stack.cpp"
 #include "abstractState.h"
-#include "debugState.h"
+#include "startState.h"
 #include "inputHandling.h"
-#include "animationState.h"
 
 static Stack<AbstractState *> stateStack = Stack<AbstractState *>();
+void (*AbstractState::readREncoder)(uint8_t index) = nullptr;
 int frame = 0;
-// void setup()
-// {
-// 	Serial.begin(115200);
-// 	DebugState *toAdd = new DebugState();
-// 	toAdd->i = 0;
-// 	stateStack.push(toAdd);
-// }
+void setup()
+{
+	
+	Serial.begin(115200);
+	// Attach the interrupts to the static method of the abstract state.
+	attachInterrupt(digitalPinToInterrupt(CLK[0]), AbstractState::leftISR, LOW);
+	attachInterrupt(digitalPinToInterrupt(CLK[0]), AbstractState::rightISR, LOW);
 
-// void loop()
-// {
-// 	if (frame == 10)
-// 	{
-// 		stateStack.push(new AnimationState());
-// 	}
-// 	if (frame == 20)
-// 	{
-// 		stateStack.pop();
-// 	}
-// 	if (frame == 30)
-// 	{
-// 		stateStack.push(new AnimationState());
-// 	}
-// 	stateStack.peek()->Cycle();
-// 	frame++;
-// }
+
+	StartState* start = new StartState(stateStack);
+	stateStack.push(start);
+}
+
+void loop()
+{
+	stateStack.peek()->Cycle();
+}
