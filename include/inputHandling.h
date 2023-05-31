@@ -70,4 +70,17 @@ static void encoderISR()
 	}
 }
 
+enum Button_Enum
+{
+	P1,
+	M1,
+	PX,
+	MX,
+	MANA,
+	COIN,
+	DICE,
+	TIMER,
+	BACK
+};
+
 #endif
