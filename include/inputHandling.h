@@ -40,10 +40,8 @@ unsigned short pollInputs()
 	}
 
 	// Poll the Rotary switches as well since we have 4 bytes to work with
-	bool val = digitalRead(SW[0]) == HIGH ? true : false;
+	bool val = digitalRead(SW) == LOW ? true : false;
 	keys |= !val ? 1 << 9 : 0;
-	val = digitalRead(SW[1]) == HIGH ? true : false;
-	keys |= !val ? 1 << 10 : 0;
 
 	// Delay so that you don't accidentally press a ton.
 	if (keys != 0)
@@ -51,6 +49,25 @@ unsigned short pollInputs()
 		delay(200);
 	}
 	return keys;
+}
+
+static void encoderISR()
+{
+	static unsigned long lastInterrupt = 0;
+	unsigned long Timer = millis();
+	if (Timer - lastInterrupt > EncoderDebounceTime)
+	{
+		AbstractState *curr = stateStack.peek();
+		if (digitalRead(DT) == LOW)
+		{
+			curr->RightISR();
+		}
+		else
+		{
+			curr->LeftISR();
+		}
+		lastInterrupt = Timer;
+	}
 }
 
 #endif
