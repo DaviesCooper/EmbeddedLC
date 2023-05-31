@@ -5,30 +5,56 @@
 #include "configuration.h"
 #include "abstractState.h"
 #include "inputHandling.h"
+#include "globals.h"
 
 struct StartState : AbstractState
 {
 
-static void HandleISR(uint8_t index){
-
-}
+	static void HandleISR()
+	{
+	}
 
 public:
-	StartState(Stack<AbstractState *> state) : AbstractState(state, HandleISR) {}
+	StartState() : AbstractState() {}
+
+	~StartState() override
+	{
+	}
+
 	void Enter() override
 	{
-        EDH = true;
-        
+		EDH = true;
 	}
 
 	void Exit() override
 	{
-       stack.pop();
+	}
+
+	void LeftISR() override
+	{
+		EDH = false;
+	}
+
+	void RightISR() override
+	{
+		EDH = true;
 	}
 
 	void Update() override
 	{
-		Serial.println("In cycle");
+		unsigned short keys = pollInputs();
+		if (DEBUG)
+		{
+			Serial.println("Start State");
+			Serial.print("\t");
+			// [n, ..., 0] bit address
+			for (int i = 0; i < 11; i++)
+			{
+				byte state = bitRead(keys, i);
+				Serial.print(state);
+			}
+			Serial.println();
+		}
 	}
 
 private:

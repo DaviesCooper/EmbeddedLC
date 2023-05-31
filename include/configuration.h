@@ -6,6 +6,14 @@
 // #region Program Variables
 
 /**
+ * @brief The debug variable. Used for setting things like interrupts
+ * to their actual position so that the program doesn't hang forever
+ * on infinite interrupts etc.
+ *
+ */
+const bool DEBUG = true;
+
+/**
  * @brief The FPS to run the main program loop at.
  * This program uses FPS to determine when to display
  * frames of animation etc. so setting this will affect
@@ -21,13 +29,7 @@ const unsigned int FPS = 5;
  * https://www.pinteric.com/rotary.html
  *
  */
-static byte REncoderDebounceTime = 5;
-
-/**
- * @brief If we are in debug mode.
- *
- */
-bool DEBUG = true;
+static byte EncoderDebounceTime = 10;
 
 // #endregion
 
@@ -36,19 +38,19 @@ bool DEBUG = true;
  * @brief The clock pins of the rotary encoders.
  *
  */
-const int CLK[] = {2, 3};
+const int CLK = 2;
 
 /**
  * @brief The Data pins of the rotary encoders.
  *
  */
-const int DT[] = {5, 6};
+const int DT = 5;
 
 /**
  * @brief The Switch pins of the rotary encoders.
  *
  */
-const int SW[] = {4, 13};
+const int SW = 4;
 
 // #endregion
 

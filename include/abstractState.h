@@ -2,37 +2,20 @@
 #define ABSTRACTSTATE_H
 
 #include <Arduino.h>
-#include "stack.h"
 #include "configuration.h"
+#include "globals.h"
+
+template <typename T>
+class Stack;
 
 struct AbstractState
 {
-static void  leftISR(){
-	static unsigned long lastLInterrupt = 0;
-	unsigned long LTimer = millis();
-	if(LTimer - lastLInterrupt > REncoderDebounceTime){
-		readREncoder(0);
-		lastLInterrupt = LTimer;
-	}
-}
-
-static void rightISR(){
-	static unsigned long lastRInterrupt = 0;
-	unsigned long RTimer = millis();
-	if(RTimer - lastRInterrupt > REncoderDebounceTime){
-		readREncoder(1);
-		lastRInterrupt = RTimer;
-	}
-}
-
-static void (*readREncoder)(uint8_t index);
 
 public:
-	AbstractState(Stack<AbstractState *> state, void (*userFunc)(uint8_t)){
-		readREncoder = userFunc;
-	};
+	AbstractState(){};
 
-	~AbstractState(){};
+	virtual ~AbstractState() = default;
+
 	/**
 	 * @brief When entering this state do some preliminary actions.
 	 *
@@ -53,13 +36,26 @@ public:
 	virtual void Update() = 0;
 
 	/**
+	 * @brief What do we do when the right ISR has been triggered
+	 *
+	 */
+	virtual void RightISR() = 0;
+
+	/**
+	 * @brief What do we do when the left ISR has been triggered
+	 *
+	 */
+	virtual void LeftISR() = 0;
+
+	/**
 	 * @brief Perform update at most once per frame.
 	 *
 	 */
 	void Cycle()
 	{
 		unsigned long currentClock = millis();
-		while ((currentClock - lastFrame) < 1000.0 / FPS){
+		while ((currentClock - lastFrame) < 1000.0 / FPS)
+		{
 			currentClock = millis();
 		}
 		Update();
@@ -74,7 +70,11 @@ private:
 	unsigned long lastFrame = 0;
 
 protected:
-	Stack<AbstractState *> stack;
+	void cleanup()
+	{
+		while (memoryCleanup.size() > 0)
+			delete memoryCleanup.pop();
+	}
 };
 
 #endif
