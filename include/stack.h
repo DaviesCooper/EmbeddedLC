@@ -1,8 +1,6 @@
 #ifndef STACK_H
 #define STACK_H
 
-struct AbstractState;
-
 template <typename T>
 class Stack
 {

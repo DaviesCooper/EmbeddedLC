@@ -1,8 +1,10 @@
 #ifndef GLOBALS_H
 #define GLOBALS_H
 
-#include <Arduino.h>
-#include "stack.h"
+template <typename T>
+class Stack;
+
+class AbstractState;
 
 extern Stack<struct AbstractState *> memoryCleanup;
 extern Stack<struct AbstractState *> stateStack;

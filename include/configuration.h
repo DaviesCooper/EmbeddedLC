@@ -1,8 +1,6 @@
 #ifndef CONFIGURATION_H
 #define CONFIGURATION_H
 
-#include <Arduino.h>
-
 // #region Program Variables
 
 /**
@@ -29,7 +27,7 @@ const unsigned int FPS = 5;
  * https://www.pinteric.com/rotary.html
  *
  */
-static byte EncoderDebounceTime = 10;
+static unsigned char EncoderDebounceTime = 10;
 
 // #endregion
 
@@ -38,19 +36,19 @@ static byte EncoderDebounceTime = 10;
  * @brief The clock pins of the rotary encoders.
  *
  */
-const int CLK = 2;
+const unsigned char CLK = 16;
 
 /**
  * @brief The Data pins of the rotary encoders.
  *
  */
-const int DT = 5;
+const unsigned char DT = 17;
 
 /**
  * @brief The Switch pins of the rotary encoders.
  *
  */
-const int SW = 4;
+const unsigned char SW = 18;
 
 // #endregion
 
@@ -61,25 +59,25 @@ const int SW = 4;
  * switch matrix polling.
  *
  */
-byte cols[] = {9, 8, 7};
+unsigned char cols[] = {19, 6, 5};
 
 /**
  * @brief The pins of the rows used for detecting if a switch
  * is pressed when polling the switch matrix.
  *
  */
-byte rows[] = {12, 11, 10};
+unsigned char rows[] = {2, 3, 4};
 
 /**
  * @brief The number of rows as defined by the rows array.
  *
  */
-const int rowCount = sizeof(rows) / sizeof(rows[0]);
+const unsigned char rowCount = sizeof(rows) / sizeof(rows[0]);
 
 /**
  * @brief The number of columns as defined by the cols array.
  *
  */
-const int colCount = sizeof(cols) / sizeof(cols[0]);
+const unsigned char colCount = sizeof(cols) / sizeof(cols[0]);
 
 #endif
